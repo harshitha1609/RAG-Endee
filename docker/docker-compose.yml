@@ -1,0 +1,31 @@
+services:
+  endee:
+    # Mock Endee service for testing
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM python:3.9-slim
+        WORKDIR /app
+        COPY mock_endee.py .
+        RUN pip install fastapi uvicorn
+        EXPOSE 8081
+        CMD ["python", "mock_endee.py"]
+    container_name: endee-vector-db
+    ports:
+      - "8081:8080"
+    environment:
+      - ENDEE_LOG_LEVEL=INFO
+      - ENDEE_PORT=8080
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - rag-network
+
+networks:
+  rag-network:
+    driver: bridge
