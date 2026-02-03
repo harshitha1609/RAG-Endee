@@ -23,4 +23,6 @@ node_modules/
 # Docker
 *.pid
 .kiro/specs/endee-rag-system/
+.kiro/
+
 
